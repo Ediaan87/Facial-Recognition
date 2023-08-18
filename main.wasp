@@ -31,47 +31,62 @@ page SignupPage {
 }
 
 entity User {=psl
-    id       Int       @id @default(autoincrement())
-    username String    @unique
+    id       Int      @id @default(autoincrement())
+    username String   @unique
     password String
-    pictures Picture[]
+    searches Search[]
 psl=}
 
-entity Picture {=psl
-    id     Int    @id @default(autoincrement())
-    url    String @unique
-    user   User   @relation(fields: [userId], references: [id])
-    userId Int
+entity Search {=psl
+    id       Int      @id @default(autoincrement())
+    imageUrl String
+    results  Result[]
+    user     User     @relation(fields: [userId], references: [id])
+    userId   Int
 psl=}
 
-action uploadPicture {
-  fn: import { uploadPicture } from "@server/actions.js",
-  entities: [User, Picture]
+entity Result {=psl
+    id        Int    @id @default(autoincrement())
+    imageUrl  String
+    sourceUrl String
+    search    Search @relation(fields: [searchId], references: [id])
+    searchId  Int
+psl=}
+
+action createSearch {
+  fn: import { createSearch } from "@server/actions.js",
+  entities: [User, Search]
 }
 
-action findFaces {
-  fn: import { findFaces } from "@server/actions.js",
-  entities: [Picture]
+action addResult {
+  fn: import { addResult } from "@server/actions.js",
+  entities: [Search, Result]
 }
 
-query getUserPictures {
-  fn: import { getUserPictures } from "@server/queries.js",
-  entities: [User, Picture]
+query getUserSearches {
+  fn: import { getUserSearches } from "@server/queries.js",
+  entities: [User, Search]
 }
 
-query getPictureResults {
-  fn: import { getPictureResults } from "@server/queries.js",
-  entities: [Picture]
+query getSearchResults {
+  fn: import { getSearchResults } from "@server/queries.js",
+  entities: [Search, Result]
 }
 
 route DashboardRoute { path: "/", to: DashboardPage }
 page DashboardPage {
-  component: import { DashboardPage } from "@client/pages/Dashboard.jsx",
+  component: import { DashboardPage } from "@client/pages/DashboardPage.jsx",
   authRequired: true
 }
 
-route ResultsRoute { path: "/results/:pictureId", to: ResultsPage }
-page ResultsPage {
-  component: import { Results } from "@client/pages/Results.jsx",
+route SearchResultsRoute { path: "/search/:searchId", to: SearchResultsPage }
+page SearchResultsPage {
+  component: import { SearchResults } from "@client/pages/SearchResults.jsx",
+  authRequired: false
+}
+
+route UploadRoute { path: "/upload", to: UploadPage }
+page UploadPage {
+  component: import { UploadPage } from "@client/pages/Upload.jsx",
   authRequired: false
 }
