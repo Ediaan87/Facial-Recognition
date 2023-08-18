@@ -9,8 +9,8 @@
 
 # 3. Position into the unzipped dir and run the app:
 
-cd <your-app-name>
-wasp db migrate-dev # init the db
-wasp start
+* cd <your-app-name>
+* wasp db migrate-dev # init the db
+* wasp start
 
 # Congratulations, you are now running your app! 🎉
