@@ -55,12 +55,17 @@ psl=}
 
 action createSearch {
   fn: import { createSearch } from "@server/actions.js",
-  entities: [User, Search]
+  entities: [User, Search, Result]
 }
 
 action addResult {
   fn: import { addResult } from "@server/actions.js",
   entities: [Search, Result]
+}
+
+action scrapeWebForSimilarImages {
+  fn: import { scrapeWebForSimilarImages } from "@server/actions.js",
+  entities: [Result]
 }
 
 query getUserSearches {
