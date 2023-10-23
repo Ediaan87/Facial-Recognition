@@ -28,6 +28,18 @@ export const createSearch = async (args, context) => {
     }
   });
 
+  // Uncommented the API call and added a null check for search
+  const similarImages = await scrapeWebForSimilarImages(args.imageUrl)
+  if (!similarImages) { throw new HttpError(404, 'No similar images found') }
+  for (const imageUrl of similarImages) {
+    await context.entities.Result.create({
+      data: {
+        imageUrl,
+        search: { connect: { id: search.id } }
+      }
+    });
+  }
+
   return search;
 }
 

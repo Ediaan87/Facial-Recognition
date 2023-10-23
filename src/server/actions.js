@@ -15,7 +15,9 @@ export const createSearch = async (args, context) => {
     }
   });
 
+  // Uncommented the API call and added a null check for search
   const similarImages = await scrapeWebForSimilarImages(args.imageUrl)
+  if (!similarImages) { throw new HttpError(404, 'No similar images found') }
   for (const imageUrl of similarImages) {
     await context.entities.Result.create({
       data: {
@@ -31,9 +33,11 @@ export const createSearch = async (args, context) => {
 export const addResult = async (args, context) => {
   if (!context.user) { throw new HttpError(401) };
 
+  // Added a null check for search
   const search = await context.entities.Search.findUnique({
     where: { id: args.searchId }
   });
+  if (!search) { throw new HttpError(404, 'No search with id ' + args.searchId) }
   if (search.userId !== context.user.id) { throw new HttpError(403) };
 
   return context.entities.Result.create({
@@ -46,10 +50,9 @@ export const addResult = async (args, context) => {
 }
 
 const scrapeWebForSimilarImages = async (imageUrl) => {
-  // TODO: Replace this with a call to the reverse image search API
-  // const response = await axios.get('https://api.example.com/reverse-image-search', {
-  //   params: { imageUrl }
-  // });
-  // return response.data.similarImages;
-  return [];
+  // Uncommented the API call
+  const response = await axios.get('https://api.example.com/reverse-image-search', {
+    params: { imageUrl }
+  });
+  return response.data.similarImages;
 }

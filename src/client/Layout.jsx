@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import useAuth from '@wasp/auth/useAuth';
 import logout from '@wasp/auth/logout';
-import "./Main.css";
+import "./styles/Main.css";
 
 export const Layout = ({ children }) => {
   const { data: user } = useAuth();
